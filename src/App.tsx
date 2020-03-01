@@ -1,4 +1,5 @@
 import React from 'react'; 
+import { Box } from '@material-ui/core';
 import TaskListManager from './TaskListManager';
 
 function App() {
@@ -10,12 +11,9 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        byte me
-      </header>
+    <Box display="flex" height='100vh' flexGrow={1} flexDirection="column">
       <TaskListManager taskList={ taskList } />
-    </div>
+    </Box>
   );
 }
 

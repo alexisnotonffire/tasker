@@ -8,7 +8,7 @@ export type TaskListProps = {
 
 function TaskList(props: TaskListProps) {
   return (
-    <Container maxWidth="sm">
+    <Container flexGrow={1} maxWidth="sm">
       <Typography variant="h6" align="center" gutterBottom="true">
         Tasks: x / { props.tasks.length }
       </Typography>
