@@ -5,8 +5,8 @@ import TaskListManager from './TaskListManager';
 function App() {
   const taskList = {
     tasks: [
-      {name: 'hoops'},
-      {name: 'loops'},
+      {id: 'llllllll', name: 'hoops'},
+      {id: 'pppppppp', name: 'loops'},
     ]
   };
 

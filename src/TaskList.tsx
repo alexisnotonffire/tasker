@@ -4,6 +4,7 @@ import Container from '@material-ui/core/Container';
 import Typography from "@material-ui/core/Typography";
 export type TaskListProps = {
   tasks: TaskProps[];
+  delTask: any;
 };
 
 function TaskList(props: TaskListProps) {
@@ -15,7 +16,7 @@ function TaskList(props: TaskListProps) {
       <Container maxwidth="sm">
         {
           props.tasks.map(
-            (task) => <Task {...task}></Task>
+            (task) => <Task {...{...task, delTask: props.delTask}}></Task>
           )
         }
       </Container>
