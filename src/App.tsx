@@ -1,19 +1,17 @@
-import React from 'react';
-import TaskList from './TaskList';
-
-const taskList = [
-  { name: "do me" },
-  { name: "touch me" },
-]
+import React from 'react'; 
+import { Box } from '@material-ui/core';
+import TaskListManager from './TaskListManager';
 
 function App() {
+  const taskList = [
+    {id: 'llllllll', name: 'hoops'},
+    {id: 'pppppppp', name: 'loops'},
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        byte me
-      </header>
-      <TaskList tasks={taskList}></TaskList>
-    </div>
+    <Box display="flex" height='100vh' flexGrow={1} flexDirection="column">
+      <TaskListManager taskList={ taskList } />
+    </Box>
   );
 }
 
