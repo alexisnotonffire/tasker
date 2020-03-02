@@ -8,23 +8,28 @@ import {
 export type TaskObject = {
   id: string;
   name: string;
+  completed: boolean;
 }
 
 export type TaskProps = {
   task: TaskObject;
-  delTask: (id: string) => void;
+  toggleTask: (id: string) => void;
+  deleteTask: (id: string) => void;
 }
 
 function Task(props: TaskProps) {
-  return (
-    <Box margin="1pt">
-    <Card onClick={ () => {props.delTask(props.task.id)} }>
-      <CardHeader
-        title={ props.task.name }
-      />
-    </Card>
-    </Box>
-  )
+  if (!props.task.completed) {
+    return (
+      <Box margin="1pt">
+        <Card onClick={ () => {props.toggleTask(props.task.id)} }>
+          <CardHeader
+            title={ props.task.name }
+          />
+        </Card>
+      </Box>
+    )
+  }
+  return null
 };
 
 export default Task;
