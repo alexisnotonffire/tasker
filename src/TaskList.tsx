@@ -7,7 +7,8 @@ import Typography from "@material-ui/core/Typography";
 
 export type TaskListProps = {
   tasks: TaskObject[];
-  delTask: (id: string) => void;
+  toggleTask: (id: string) => void;
+  deleteTask: (id: string) => void;
 };
 
 function TaskList(props: TaskListProps) {
@@ -19,7 +20,12 @@ function TaskList(props: TaskListProps) {
       <Container maxWidth="sm">
         {
           props.tasks.map(
-            (task: TaskObject) => <Task task={ task } delTask={ props.delTask } /> 
+            (task: TaskObject) => 
+              <Task 
+                task={ task } 
+                toggleTask={ props.toggleTask }
+                deleteTask={ props.deleteTask } 
+              /> 
           )
         }
       </Container>
