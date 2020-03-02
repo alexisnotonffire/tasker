@@ -1,22 +1,25 @@
 import React from 'react';
-import Task, { TaskProps } from './Task';
+import Task, { 
+  TaskObject,
+} from './Task';
 import Container from '@material-ui/core/Container';
 import Typography from "@material-ui/core/Typography";
+
 export type TaskListProps = {
-  tasks: TaskProps[];
-  delTask: any;
+  tasks: TaskObject[];
+  delTask: (id: string) => void;
 };
 
 function TaskList(props: TaskListProps) {
   return (
-    <Container flexGrow={1} maxWidth="sm">
-      <Typography variant="h6" align="center" gutterBottom="true">
-        Tasks: x / { props.tasks.length }
+    <Container maxWidth="sm">
+      <Typography variant="h6" align="center" gutterBottom>
+        Tasks: x / { props.tasks.length ? props.tasks.length : 0 }
       </Typography>
-      <Container maxwidth="sm">
+      <Container maxWidth="sm">
         {
           props.tasks.map(
-            (task) => <Task {...{...task, delTask: props.delTask}}></Task>
+            (task: TaskObject) => <Task task={ task } delTask={ props.delTask } /> 
           )
         }
       </Container>

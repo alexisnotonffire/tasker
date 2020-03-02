@@ -5,18 +5,22 @@ import {
   CardHeader,
 } from '@material-ui/core';
 
-export type TaskProps = {
+export type TaskObject = {
   id: string;
   name: string;
-  delTask: any;
+}
+
+export type TaskProps = {
+  task: TaskObject;
+  delTask: (id: string) => void;
 }
 
 function Task(props: TaskProps) {
   return (
     <Box margin="1pt">
-    <Card onClick={ () => {props.delTask(props.id)}}>
+    <Card onClick={ () => {props.delTask(props.task.id)} }>
       <CardHeader
-        title={ props.name }
+        title={ props.task.name }
       />
     </Card>
     </Box>
