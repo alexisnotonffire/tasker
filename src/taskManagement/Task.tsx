@@ -6,31 +6,31 @@ import {
 } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 
+import { TaskListUpdater } from "./taskManagement";
+
 export type TaskObject = {
   id: string;
   name: string;
   completed: boolean;
+  index: number;
 }
 
 export type TaskProps = {
   task: TaskObject;
-  toggleTask: (id: string) => void;
-  deleteTask: (id: string) => void;
+  toggleTask: (s: string) => void;
+  deleteTask: TaskListUpdater;
 }
 
 function Task(props: TaskProps) {
-  if (!props.task.completed) {
-    return (
-      <Box margin="1pt">
-        <Card onClick={ () => {props.toggleTask(props.task.id)} }>
-          <CardHeader
-            title={ props.task.name }
-          />
-        </Card>
-      </Box>
-    )
-  }
-  return (<div/>)
+  return props.task.completed ? <div /> : (
+    <Box margin="1pt">
+      <Card onClick={ () => { props.toggleTask(props.task.id) } }>
+        <CardHeader
+          title={ props.task.name }
+        />
+      </Card>
+    </Box>
+  )
 };
 
 type DraggableTaskProps = {

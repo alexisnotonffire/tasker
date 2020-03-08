@@ -4,71 +4,39 @@ import {
   DragDropContext, 
   OnDragEndResponder, 
 } from 'react-beautiful-dnd';
-import { TaskObject } from './taskManagement/Task';
 import TaskListManager from './taskManagement/TaskListManager';
-
-const uuid = require('uuid/v4')
-
-const init: TaskObject[] = [
-  {id: 'scooby', name: 'boop', completed: false},
-  {id: 'dooby', name: 'doop', completed: false},
-  {id: 'doo', name: 'floop', completed: false},
-]
+import {
+  addTask,
+  deleteTask,
+  toggleTask,
+} from './taskManagement/taskManagement';
+import { moveTaskInList } from './taskManagement/taskDrag';
+import { 
+  getTasks,
+  setTasks,
+} from './taskManagement/taskStorage';
+import { TaskObject } from './taskManagement/Task';
 
 function App() {
 
-  const [taskList, setTaskList] = useState(init);
+  const [taskList, setTaskList] = useState(getTasks());
 
-  const addTask = (name: string) => {
-    if (name !== '') {
-      let updatedTasks: TaskObject[] = taskList;
-      updatedTasks.push(makeTask(name));
-      setTaskList(updatedTasks);
-    }
-  };
+  const onDragEnd: OnDragEndResponder = (provided) => {
+    const tasks = (provided.destination != null) 
+      ? moveTaskInList(
+        taskList, 
+        provided.source.index, 
+        provided.destination?.index
+      ) 
+      : deleteTask(taskList, taskList[provided.source.index].id)
 
-  const toggleTask = (id: string) => {
-    setTaskList(
-      taskList.map(
-        (task: TaskObject) => { 
-          if (task.id === id) {
-            return Object.assign(task, {completed: !task.completed}) 
-          }
-          return task 
-        }
-      )
-    )
-  };
+    setTaskList(tasks)
+  }
 
-  const deleteTask = (id: string) => {
-    let updatedTasks = taskList.filter(
-      (task: TaskObject) => { return task.id !== id }
-    );
-    setTaskList(updatedTasks);
-  };
-
-  const makeTask = (taskName: string) => {
-    return {
-      id: uuid(),
-      name: taskName,
-      completed: false,
-    }
-  };
-
-  const onDragEnd: OnDragEndResponder = (result, provided) => { 
-    if (!result.destination) {
-      setTaskList(taskList.filter((_, i) => i !== result.source.index))
-      return
-    }
-
-    const updatedTaskList = Array.from(taskList);
-    const [removed] = updatedTaskList.splice(result.source.index, 1);
-    updatedTaskList.splice(result.destination.index, 0, removed);
-    
-    console.log(`${result.source.index} => ${result.destination?.index}`)
-
-    setTaskList(updatedTaskList);
-    
+  const toggleAppTask: (s: string) => void = (id) => {
+    const tasks: TaskObject[] = toggleTask(taskList, id)
+    setTaskList(tasks);
+    setTasks(tasks);
   }
 
   return (
@@ -77,7 +45,7 @@ function App() {
         <TaskListManager
           addTask={ addTask }
           deleteTask={ deleteTask } 
-          toggleTask={ toggleTask }
+          toggleTask={ toggleAppTask }
           taskList={ taskList } 
         />
       </Box>

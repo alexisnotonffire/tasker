@@ -6,11 +6,12 @@ import { Droppable } from 'react-beautiful-dnd';
 import Task, { 
   TaskObject,
 } from './Task';
+import { TaskListUpdater } from './taskManagement';
 
 export type TaskListProps = {
   tasks: TaskObject[];
-  toggleTask: (id: string) => void;
-  deleteTask: (id: string) => void;
+  toggleTask: (s: string) => void;
+  deleteTask: TaskListUpdater;
 };
 
 function TaskList(props: TaskListProps) {
