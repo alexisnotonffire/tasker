@@ -1,21 +1,25 @@
-import { TaskObject } from './Task';
+import { 
+    TaskCategory,
+    TaskObject, 
+} from './Task';
 import { setTasks } from './taskStorage';
 import { v4 as uuid } from 'uuid';
 
 export type TaskListUpdater = (tl: TaskObject[], str?: string) => TaskObject[];
 
-export const createTask: (a: string, b: number) => TaskObject = (taskName, index) => {
+export const createTask: (s: string, n: number, c?: TaskCategory) => TaskObject = (taskName, index, category) => {
     return {
         id: uuid(),
         name: taskName,
         completed: false,
+        category: category || TaskCategory.CURRENT,
         index: index,
     };
 };
 
-export const addTask: TaskListUpdater = (tasks, name) => {
+export const addTask: (to: TaskObject[], n: string, c?: TaskCategory) => TaskObject[] = (tasks, name, category) => {
     if (name !== '' && name !== undefined) {
-        const newTask: TaskObject = createTask(name, tasks.length)
+        const newTask: TaskObject = createTask(name, tasks.length, category)
         tasks.push(newTask);
         console.log(`Added: ${JSON.stringify(newTask)}`);
 

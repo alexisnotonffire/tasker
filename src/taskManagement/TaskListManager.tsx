@@ -4,6 +4,7 @@ import React, {
 import { 
   Box,
   Button,
+  ButtonGroup,
   Card,
   CardContent,
   Container,
@@ -11,13 +12,18 @@ import {
   TextField,
 } from "@material-ui/core";
 import TaskList from './TaskList';
-import { TaskObject } from './Task';
+import { 
+  TaskCategory,
+  TaskObject, 
+} from './Task';
 import { TaskListUpdater } from './taskManagement';
 
 export type TaskListManagerProps = {
-  taskList: TaskObject[];
-  addTask: TaskListUpdater;
+  addTask: (to: TaskObject[], n: string, c?: TaskCategory) => TaskObject[];
+  category: TaskCategory;
+  changeTaskList: (c: TaskCategory) => void;
   deleteTask: TaskListUpdater;
+  taskList: TaskObject[];
   toggleTask: (s: string) => void;
 };
 
@@ -27,7 +33,14 @@ function TaskListManager(props: TaskListManagerProps) {
 
   return (    
     <Box display="flex" maxHeight="100vh" flexDirection="column" flexGrow='1'>
-      <Box flexGrow='1' maxHeight="100vh" overflow="auto">
+      <Box flexGrow='1' maxHeight="100%" overflow="auto">
+        <ButtonGroup>
+          { 
+            Object.values(TaskCategory).map(
+              (category) => (<Button onClick={ () => props.changeTaskList(category) }> { category } </Button>)
+            )
+          }
+        </ButtonGroup>
         <TaskList 
           tasks={ props.taskList } 
           toggleTask={ props.toggleTask }
@@ -36,6 +49,7 @@ function TaskListManager(props: TaskListManagerProps) {
       </Box>    
       <Box>
         <Container maxWidth="sm">
+          <Button onClick={ () => localStorage.removeItem('tasks') }><Icon>delete_forever</Icon></Button>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center">
@@ -47,7 +61,7 @@ function TaskListManager(props: TaskListManagerProps) {
                     onChange={ e => setNewTaskName(e.target.value) }
                     onKeyPress={ e => { 
                       if (e.key === 'Enter') { 
-                        props.addTask(props.taskList, newTaskName); 
+                        props.addTask(props.taskList, newTaskName, props.category); 
                         setNewTaskName(''); 
                       }} 
                     }
@@ -55,7 +69,7 @@ function TaskListManager(props: TaskListManagerProps) {
                 </Box>
                 <Button
                   onClick={ () => {
-                    props.addTask(props.taskList, newTaskName);
+                    props.addTask(props.taskList, newTaskName, props.category);
                     setNewTaskName(''); 
                   }}>
                   <Icon>add_circle</Icon>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'; 
-import { Box } from '@material-ui/core';
+import { 
+  Box,
+} from '@material-ui/core';
 import { 
   DragDropContext, 
   OnDragEndResponder, 
@@ -15,11 +17,16 @@ import {
   getTasks,
   setTasks,
 } from './taskManagement/taskStorage';
-import { TaskObject } from './taskManagement/Task';
+import { 
+  TaskCategory,
+  TaskObject, 
+} from './taskManagement/Task';
 
 function App() {
-
-  const [taskList, setTaskList] = useState(getTasks());
+  const [category, setCategory] = useState(
+    TaskCategory[localStorage.getItem('defaultCategory') as keyof typeof TaskCategory] || TaskCategory.CURRENT
+  );
+  const [taskList, setTaskList] = useState(getTasks(category));
 
   const onDragEnd: OnDragEndResponder = (provided) => {
     const tasks = (provided.destination != null) 
@@ -39,14 +46,21 @@ function App() {
     setTasks(tasks);
   }
 
+  const changeTaskList: (c: TaskCategory) => void = (category) => {
+    setCategory(category);
+    setTaskList(getTasks(category));
+  }
+
   return (
     <DragDropContext onDragEnd={ onDragEnd }>
       <Box display="flex" height='100vh' flexGrow={1} flexDirection="column">
         <TaskListManager
           addTask={ addTask }
+          category={ category }
+          changeTaskList={ changeTaskList }
           deleteTask={ deleteTask } 
+          taskList={ taskList }
           toggleTask={ toggleAppTask }
-          taskList={ taskList } 
         />
       </Box>
     </DragDropContext>

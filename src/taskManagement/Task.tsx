@@ -11,8 +11,16 @@ import { TaskListUpdater } from "./taskManagement";
 export type TaskObject = {
   id: string;
   name: string;
+  category: TaskCategory;
   completed: boolean;
-  index: number;
+  index: number | null;
+}
+
+export enum TaskCategory {
+  CURRENT = 'current', // needs to be done now
+  SOON = 'soon',       // needs to be done soon
+  GOALS = 'goals',     // would like to do at some point
+  PLANNED = 'planned', // needs to be done at some point
 }
 
 export type TaskProps = {
