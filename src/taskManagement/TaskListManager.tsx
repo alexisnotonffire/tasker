@@ -12,12 +12,13 @@ import {
 } from "@material-ui/core";
 import TaskList from './TaskList';
 import { TaskObject } from './Task';
+import { TaskListUpdater } from './taskManagement';
 
 export type TaskListManagerProps = {
   taskList: TaskObject[];
-  addTask: any;
-  deleteTask: any;
-  toggleTask: any;
+  addTask: TaskListUpdater;
+  deleteTask: TaskListUpdater;
+  toggleTask: (s: string) => void;
 };
 
 function TaskListManager(props: TaskListManagerProps) {  
@@ -46,14 +47,17 @@ function TaskListManager(props: TaskListManagerProps) {
                     onChange={ e => setNewTaskName(e.target.value) }
                     onKeyPress={ e => { 
                       if (e.key === 'Enter') { 
-                        props.addTask(newTaskName); 
+                        props.addTask(props.taskList, newTaskName); 
                         setNewTaskName(''); 
                       }} 
                     }
                   />
                 </Box>
                 <Button
-                  onClick={ props.addTask }>
+                  onClick={ () => {
+                    props.addTask(props.taskList, newTaskName);
+                    setNewTaskName(''); 
+                  }}>
                   <Icon>add_circle</Icon>
                 </Button>
               </Box>
