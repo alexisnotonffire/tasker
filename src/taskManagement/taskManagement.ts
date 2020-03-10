@@ -2,32 +2,57 @@ import {
     TaskCategory,
     TaskObject, 
 } from './Task';
-import { setTasks } from './taskStorage';
 import { v4 as uuid } from 'uuid';
 
-export type TaskListUpdater = (tl: TaskObject[], str?: string) => TaskObject[];
+export type TaskListUpdater = (t: TaskObject[], s: string, c?: TaskCategory) => TaskObject[];
+export type TaskUpdater = (s: string, c?: TaskCategory) => void;
+
+export const addTask: (to: TaskObject[], n: string, c?: TaskCategory) => TaskObject[] = (tasks, name, category) => {
+    if (name !== '' && typeof name !== 'undefined') {
+        const newTasks = Array.from(tasks)
+        const newTask: TaskObject = createTask(name, tasks.length, category)
+
+        newTasks.push(newTask);
+        console.log(`Added: ${JSON.stringify(newTask)}`);
+        
+        return newTasks;
+    }
+    return tasks;
+};
+
+export const archiveTask: TaskListUpdater = (tasks, id) => {
+    let newTasks: TaskObject[] = Array.from(tasks) 
+    newTasks = newTasks.map(
+            (task: TaskObject) => { 
+                if (task.id === id) {
+                    return Object.assign(task, {archived: true, index: -1}) 
+                }
+                return task
+            }
+        )
+        .filter((task) => !task.archived)
+        .map((task, idx) => { return Object.assign(task, {index: idx}) as TaskObject })
+        .concat(newTasks.filter((task) => task.archived))
+        
+    return newTasks
+};
 
 export const createTask: (s: string, n: number, c?: TaskCategory) => TaskObject = (taskName, index, category) => {
     return {
-        id: uuid(),
-        name: taskName,
-        completed: false,
+        archived: false,
         category: category || TaskCategory.CURRENT,
+        completed: false,
+        id: uuid(),
         index: index,
+        name: taskName,
     };
 };
 
-export const addTask: (to: TaskObject[], n: string, c?: TaskCategory) => TaskObject[] = (tasks, name, category) => {
-    if (name !== '' && name !== undefined) {
-        const newTask: TaskObject = createTask(name, tasks.length, category)
-        tasks.push(newTask);
-        console.log(`Added: ${JSON.stringify(newTask)}`);
+export const deleteTask: TaskListUpdater = (tasks, id) => {
+    let newTasks = Array.from(tasks);
+    newTasks = newTasks.filter((task) => task.id !== id);
 
-        setTasks(tasks);
-        console.log(`stored new state: ${JSON.stringify(tasks)}`);
-    }
-
-    return tasks;
+    return newTasks;
 };
 
 export const toggleTask: TaskListUpdater = (tasks, id) => {
@@ -41,17 +66,5 @@ export const toggleTask: TaskListUpdater = (tasks, id) => {
         }
     );
 
-    setTasks(tasks);
-    console.log(`stored new state: ${JSON.stringify(tasks)}`);
-
-    return newTasks
-};
-
-export const deleteTask: TaskListUpdater = (tasks, id) => {
-    const newTasks = tasks.filter((task) => task.id !== id)
-
-    setTasks(newTasks);
-    console.log(`stored new state: ${JSON.stringify(newTasks)}`);
-    
-    return newTasks
+    return newTasks;
 };

@@ -6,12 +6,13 @@ import { Droppable } from 'react-beautiful-dnd';
 import Task, { 
   TaskObject,
 } from './Task';
-import { TaskListUpdater } from './taskManagement';
+import { TaskUpdater } from './taskManagement';
 
 export type TaskListProps = {
+  archiveTask: TaskUpdater;
+  deleteTask: TaskUpdater;
   tasks: TaskObject[];
   toggleTask: (s: string) => void;
-  deleteTask: TaskListUpdater;
 };
 
 function TaskList(props: TaskListProps) {
@@ -34,9 +35,10 @@ function TaskList(props: TaskListProps) {
                       <Task 
                         { ...{
                           task: {
+                            archiveTask: props.archiveTask,
+                            deleteTask: props.deleteTask,
                             task: task,
                             toggleTask: props.toggleTask,
-                            deleteTask: props.deleteTask,
                           },
                           index: idx,
                         }}
