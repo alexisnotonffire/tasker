@@ -16,15 +16,16 @@ import {
   TaskCategory,
   TaskObject, 
 } from './Task';
-import { TaskListUpdater } from './taskManagement';
+import { TaskUpdater } from './taskManagement';
 
 export type TaskListManagerProps = {
-  addTask: (to: TaskObject[], n: string, c?: TaskCategory) => TaskObject[];
+  addTask: TaskUpdater;
+  archiveTask: TaskUpdater;
   category: TaskCategory;
   changeTaskList: (c: TaskCategory) => void;
-  deleteTask: TaskListUpdater;
+  deleteTask: TaskUpdater;
   taskList: TaskObject[];
-  toggleTask: (s: string) => void;
+  toggleTask: TaskUpdater;
 };
 
 function TaskListManager(props: TaskListManagerProps) {  
@@ -34,17 +35,26 @@ function TaskListManager(props: TaskListManagerProps) {
   return (    
     <Box display="flex" maxHeight="100vh" flexDirection="column" flexGrow='1'>
       <Box flexGrow='1' maxHeight="100%" overflow="auto">
-        <ButtonGroup>
+        <ButtonGroup variant="contained">
           { 
             Object.values(TaskCategory).map(
-              (category) => (<Button onClick={ () => props.changeTaskList(category) }> { category } </Button>)
+              (category) => (
+                <Button 
+                  key={ category }
+                  color={ category === props.category ? "primary" : "default" }
+                  onClick={ () => props.changeTaskList(category) }
+                > 
+                  { category } 
+                </Button>
+              )
             )
           }
         </ButtonGroup>
         <TaskList 
+          archiveTask={ props.archiveTask }
+          deleteTask={ props.deleteTask }
           tasks={ props.taskList } 
           toggleTask={ props.toggleTask }
-          deleteTask={ props.deleteTask } 
         />
       </Box>    
       <Box>
@@ -61,7 +71,7 @@ function TaskListManager(props: TaskListManagerProps) {
                     onChange={ e => setNewTaskName(e.target.value) }
                     onKeyPress={ e => { 
                       if (e.key === 'Enter') { 
-                        props.addTask(props.taskList, newTaskName, props.category); 
+                        props.addTask(newTaskName, props.category); 
                         setNewTaskName(''); 
                       }} 
                     }
@@ -69,7 +79,7 @@ function TaskListManager(props: TaskListManagerProps) {
                 </Box>
                 <Button
                   onClick={ () => {
-                    props.addTask(props.taskList, newTaskName, props.category);
+                    props.addTask(newTaskName, props.category);
                     setNewTaskName(''); 
                   }}>
                   <Icon>add_circle</Icon>

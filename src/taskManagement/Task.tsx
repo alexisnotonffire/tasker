@@ -1,19 +1,22 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Card,
   CardHeader,
+  Icon,
 } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 
-import { TaskListUpdater } from "./taskManagement";
+import { TaskUpdater } from "./taskManagement";
 
 export type TaskObject = {
-  id: string;
-  name: string;
+  archived: boolean;
   category: TaskCategory;
   completed: boolean;
+  id: string;
   index: number | null;
+  name: string;
 }
 
 export enum TaskCategory {
@@ -24,17 +27,31 @@ export enum TaskCategory {
 }
 
 export type TaskProps = {
+  archiveTask: TaskUpdater;
+  deleteTask: TaskUpdater;
   task: TaskObject;
-  toggleTask: (s: string) => void;
-  deleteTask: TaskListUpdater;
+  toggleTask: TaskUpdater;
 }
 
 function Task(props: TaskProps) {
   return props.task.completed ? <div /> : (
     <Box margin="1pt">
-      <Card onClick={ () => { props.toggleTask(props.task.id) } }>
+      <Card>
         <CardHeader
           title={ props.task.name }
+          action={
+            <Box>
+              <Button onClick={ () => props.deleteTask(props.task.id, props.task.category) }>
+                <Icon>delete_forever</Icon>
+              </Button>
+              <Button onClick={ () => props.archiveTask(props.task.id, props.task.category) }>
+                <Icon>archive</Icon>
+              </Button>
+              <Button  onClick={ () => props.toggleTask(props.task.id, props.task.category) }>
+                <Icon>check_circle</Icon>
+              </Button>
+            </Box>
+          }
         />
       </Card>
     </Box>

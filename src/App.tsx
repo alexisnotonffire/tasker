@@ -9,6 +9,7 @@ import {
 import TaskListManager from './taskManagement/TaskListManager';
 import {
   addTask,
+  archiveTask,
   deleteTask,
   toggleTask,
 } from './taskManagement/taskManagement';
@@ -40,10 +41,13 @@ function App() {
     setTaskList(tasks)
   }
 
-  const toggleAppTask: (s: string) => void = (id) => {
-    const tasks: TaskObject[] = toggleTask(taskList, id)
-    setTaskList(tasks);
-    setTasks(tasks);
+  const updateTaskInList: (t: TaskObject[], f: (t: TaskObject[], s: string, c?: TaskCategory) => TaskObject[]) => (id: string, c?: TaskCategory) => TaskObject[] = (tasks, fn) => {
+    return (id: string, category?: TaskCategory) => {
+      const newTasks: TaskObject[] = fn(tasks, id, category);
+      setTasks(newTasks, category || TaskCategory.CURRENT);
+      setTaskList(getTasks(category));
+      return newTasks;
+    }
   }
 
   const changeTaskList: (c: TaskCategory) => void = (category) => {
@@ -55,12 +59,13 @@ function App() {
     <DragDropContext onDragEnd={ onDragEnd }>
       <Box display="flex" height='100vh' flexGrow={1} flexDirection="column">
         <TaskListManager
-          addTask={ addTask }
+          addTask={ updateTaskInList(taskList, addTask) }
+          archiveTask={ updateTaskInList(taskList, archiveTask) }
           category={ category }
           changeTaskList={ changeTaskList }
-          deleteTask={ deleteTask } 
+          deleteTask={ updateTaskInList(taskList, deleteTask) } 
           taskList={ taskList }
-          toggleTask={ toggleAppTask }
+          toggleTask={ updateTaskInList(taskList, toggleTask) }
         />
       </Box>
     </DragDropContext>
